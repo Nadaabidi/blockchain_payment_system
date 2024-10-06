@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Payment System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Blockchain Payment System</h1>
+    <button id="sendPayment">Send Payment</button>
+    <button id="getBalance">Get Contract Balance</button>
+    <button id="withdrawFunds">Withdraw Funds</button>
+
+    <p id="status"></p>
+    <p id="balance"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.11/dist/web3.min.js"></script>
+    <script>
+        const web3 = new Web3(window.ethereum);
+
+        const contractAddress = "0xC16aF0cbBe16919fe150c69B286Ec6bA6CAf422a"; 
+        const abi = [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "PaymentReceived",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive",
+      "payable": true
+    },
+    {
+      "inputs": [],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    }]; 
+
+        const contract = new web3.eth.Contract(abi, contractAddress);
+
+        document.getElementById('sendPayment').addEventListener('click', async () => {
+            const accounts = await web3.eth.requestAccounts();
+            contract.methods.receive().send({
+                from: accounts[0],
+                value: web3.utils.toWei('0.1', 'ether')
+            }).then(() => {
+                document.getElementById('status').innerText = "Payment sent!";
+            }).catch(err => {
+                document.getElementById('status').innerText = "Error sending payment.";
+            });
+        });
+
+        document.getElementById('getBalance').addEventListener('click', async () => {
+            try {
+                const balance = await contract.methods.getBalance().call();
+                document.getElementById('balance').innerText = "Contract Balance: " + web3.utils.fromWei(balance, 'ether') + " ETH";
+            } catch (err) {
+                document.getElementById('balance').innerText = "Error getting balance.";
+            }
+        });
+
+        document.getElementById('withdrawFunds').addEventListener('click', async () => {
+    const accounts = await web3.eth.requestAccounts();
+    contract.methods.withdraw().send({
+        from: accounts[0]
+    }).then(() => {
+        document.getElementById('status').innerText = "Funds withdrawn!";
+    }).catch(err => {
+        document.getElementById('status').innerText = "Error withdrawing funds.";
+    });
+});
+    </script>
+</body>
+</html>
