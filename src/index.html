@@ -11,15 +11,33 @@
     <button id="sendPayment">Send Payment</button>
     <button id="getBalance">Get Contract Balance</button>
     <button id="withdrawFunds">Withdraw Funds</button>
+    <button id="requestRefund">Request Refund</button>
+
+    <input type="number" id="paymentLimit" placeholder="Enter payment limit in ETH">
+    <button id="setPaymentLimit">Set Payment Limit</button>
 
     <p id="status"></p>
     <p id="balance"></p>
+
+    <div>
+      <h3>Payment History</h3>
+      <table id="paymentHistoryTable">
+        <thead>
+          <tr>
+            <th>Sender</th>
+            <th>Amount (ETH)</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="paymentHistory"></tbody>
+      </table>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/web3@1.2.11/dist/web3.min.js"></script>
     <script>
         const web3 = new Web3(window.ethereum);
 
-        const contractAddress = "0xC16aF0cbBe16919fe150c69B286Ec6bA6CAf422a"; 
+        const contractAddress = "0x65EA6B7fCD145E1F030476c91b0adB9160A86aEF"; 
         const abi = [
     {
       "inputs": [],
@@ -119,6 +137,67 @@
         document.getElementById('status').innerText = "Error withdrawing funds.";
     });
 });
+
+document.getElementById('setPaymentLimit').addEventListener('click', async () => {
+    const limit = document.getElementById('paymentLimit').value;
+    const accounts = await web3.eth.requestAccounts();
+    contract.methods.setPaymentLimit(web3.utils.toWei(limit, 'ether')).send({
+        from: accounts[0]
+    }).then(() => {
+        document.getElementById('status').innerText = "Payment limit set!";
+    }).catch(err => {
+        document.getElementById('status').innerText = "Error setting payment limit.";
+    });
+});
+document.getElementById('requestRefund').addEventListener('click', async () => {
+    const accounts = await web3.eth.requestAccounts();
+    contract.methods.refund().send({
+        from: accounts[0]
+    }).then(() => {
+        document.getElementById('status').innerText = "Refund successful!";
+    }).catch(err => {
+        document.getElementById('status').innerText = "Error requesting refund.";
+    });
+});
+// Function to fetch and display the payment history
+async function loadPaymentHistory() {
+    const paymentCount = await contract.methods.getPaymentCount().call(); // Get total number of payments
+    const paymentTableBody = document.getElementById('paymentHistory');    // Get the HTML table body element
+
+    // Clear previous rows
+    paymentTableBody.innerHTML = '';
+
+    // Loop through all payments
+    for (let i = 0; i < paymentCount; i++) {
+        const payment = await contract.methods.getPayment(i).call();  // Fetch each payment
+
+        const sender = payment[0];
+        const amountInWei = payment[1];
+        const timestamp = payment[2];
+
+        // Convert amount from Wei to Ether and timestamp to human-readable date
+        const amountInEth = web3.utils.fromWei(amountInWei, 'ether');
+        const date = new Date(timestamp * 1000).toLocaleString(); // Convert Unix timestamp to readable format
+
+        // Create a new row in the table
+        const row = `
+            <tr>
+                <td>${sender}</td>
+                <td>${amountInEth}</td>
+                <td>${date}</td>
+            </tr>
+        `;
+
+        // Append the row to the table body
+        paymentTableBody.innerHTML += row;
+    }
+}
+
+// Call loadPaymentHistory when the page loads to display payment history
+window.onload = async () => {
+    await loadPaymentHistory();
+};
+
     </script>
 </body>
 </html>
