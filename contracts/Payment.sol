@@ -57,6 +57,7 @@ contract Payment {
         payable(msg.sender).transfer(amount);
     }
 
+
     function getPayment(uint256 index) public view returns (address, uint256, uint256) {
         PaymentInfo memory payment = payments[index]; 
         return (payment.sender, payment.amount, payment.timestamp);

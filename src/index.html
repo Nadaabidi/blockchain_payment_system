@@ -3,201 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blockchain Payment System</title>
+    <title>Crypto Transaction Tracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Blockchain Payment System</h1>
-    <button id="sendPayment">Send Payment</button>
-    <button id="getBalance">Get Contract Balance</button>
-    <button id="withdrawFunds">Withdraw Funds</button>
-    <button id="requestRefund">Request Refund</button>
+    <header class="header-section">
+        <div class="header-content">
+            <h1>Crypto Transaction Tracker</h1>
+            <p>A blockchain-based payment system that ensures secure and efficient cryptocurrency transactions. Easily manage payments, check balances, and track transaction history with our seamless interface.</p>
+            <nav>
+                <ul class="nav-list">
+                    <li class="btn-98"><a href="index.html">Dashboard</a></li>
+                    <li class="btn-98"><a href="transactions.html">Transactions</a></li>
+                    <li class="btn-98"><a href="profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="header-image">
+            <img src="./assets/bitcoin.png" alt="" />
+        </div>
+    </header>
 
-    <input type="number" id="paymentLimit" placeholder="Enter payment limit in ETH">
-    <button id="setPaymentLimit">Set Payment Limit</button>
+    <div id="dashboardContent">
+        <button id="sendPayment" class="btn-50" onclick="openModal('Send Payment')"><span>Send Payment</span></button>
+        <button id="withdrawFunds" class="btn-50" onclick="openModal('Withdraw Funds')"><span>Withdraw Funds</span></button>
+        <button id="requestRefund" class="btn-50" onclick="openModal('Request Refund')"><span>Request Refund</span></button>
+        <button id="getBalance" class="btn-50" onclick="openModal('Get Contract Balance')"><span>Get Contract Balance</span></button>
 
-    <p id="status"></p>
-    <p id="balance"></p>
-
-    <div>
-      <h3>Payment History</h3>
-      <table id="paymentHistoryTable">
-        <thead>
-          <tr>
-            <th>Sender</th>
-            <th>Amount (ETH)</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody id="paymentHistory"></tbody>
-      </table>
+    </div>
+    <!-- Modal Popup Structure -->
+    <div id="outputModal" class="modal">
+        <h2 id="modalTitle"></h2>
+        <div class="modal-content" id="modalContent"></div>
+        <button class="close-modal" onclick="closeModal()">Close</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.11/dist/web3.min.js"></script>
     <script>
-        const web3 = new Web3(window.ethereum);
-
-        const contractAddress = "0x65EA6B7fCD145E1F030476c91b0adB9160A86aEF"; 
-        const abi = [
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
+        function openModal(action) {
+            document.getElementById('modalTitle').innerText = action;
+            document.getElementById('modalContent').innerText = `Performing action: ${action}`;
+            document.getElementById('outputModal').style.display = 'block';
         }
-      ],
-      "name": "PaymentReceived",
-      "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
+
+        function closeModal() {
+            document.getElementById('outputModal').style.display = 'none';
         }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    },
-    {
-      "stateMutability": "payable",
-      "type": "receive",
-      "payable": true
-    },
-    {
-      "inputs": [],
-      "name": "withdraw",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getBalance",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "constant": true
-    }]; 
-
-        const contract = new web3.eth.Contract(abi, contractAddress);
-
-        document.getElementById('sendPayment').addEventListener('click', async () => {
-            const accounts = await web3.eth.requestAccounts();
-            contract.methods.receive().send({
-                from: accounts[0],
-                value: web3.utils.toWei('0.1', 'ether')
-            }).then(() => {
-                document.getElementById('status').innerText = "Payment sent!";
-            }).catch(err => {
-                document.getElementById('status').innerText = "Error sending payment.";
-            });
-        });
-
-        document.getElementById('getBalance').addEventListener('click', async () => {
-            try {
-                const balance = await contract.methods.getBalance().call();
-                document.getElementById('balance').innerText = "Contract Balance: " + web3.utils.fromWei(balance, 'ether') + " ETH";
-            } catch (err) {
-                document.getElementById('balance').innerText = "Error getting balance.";
-            }
-        });
-
-        document.getElementById('withdrawFunds').addEventListener('click', async () => {
-    const accounts = await web3.eth.requestAccounts();
-    contract.methods.withdraw().send({
-        from: accounts[0]
-    }).then(() => {
-        document.getElementById('status').innerText = "Funds withdrawn!";
-    }).catch(err => {
-        document.getElementById('status').innerText = "Error withdrawing funds.";
-    });
-});
-
-document.getElementById('setPaymentLimit').addEventListener('click', async () => {
-    const limit = document.getElementById('paymentLimit').value;
-    const accounts = await web3.eth.requestAccounts();
-    contract.methods.setPaymentLimit(web3.utils.toWei(limit, 'ether')).send({
-        from: accounts[0]
-    }).then(() => {
-        document.getElementById('status').innerText = "Payment limit set!";
-    }).catch(err => {
-        document.getElementById('status').innerText = "Error setting payment limit.";
-    });
-});
-document.getElementById('requestRefund').addEventListener('click', async () => {
-    const accounts = await web3.eth.requestAccounts();
-    contract.methods.refund().send({
-        from: accounts[0]
-    }).then(() => {
-        document.getElementById('status').innerText = "Refund successful!";
-    }).catch(err => {
-        document.getElementById('status').innerText = "Error requesting refund.";
-    });
-});
-// Function to fetch and display the payment history
-async function loadPaymentHistory() {
-    const paymentCount = await contract.methods.getPaymentCount().call(); // Get total number of payments
-    const paymentTableBody = document.getElementById('paymentHistory');    // Get the HTML table body element
-
-    // Clear previous rows
-    paymentTableBody.innerHTML = '';
-
-    // Loop through all payments
-    for (let i = 0; i < paymentCount; i++) {
-        const payment = await contract.methods.getPayment(i).call();  // Fetch each payment
-
-        const sender = payment[0];
-        const amountInWei = payment[1];
-        const timestamp = payment[2];
-
-        // Convert amount from Wei to Ether and timestamp to human-readable date
-        const amountInEth = web3.utils.fromWei(amountInWei, 'ether');
-        const date = new Date(timestamp * 1000).toLocaleString(); // Convert Unix timestamp to readable format
-
-        // Create a new row in the table
-        const row = `
-            <tr>
-                <td>${sender}</td>
-                <td>${amountInEth}</td>
-                <td>${date}</td>
-            </tr>
-        `;
-
-        // Append the row to the table body
-        paymentTableBody.innerHTML += row;
-    }
-}
-
-// Call loadPaymentHistory when the page loads to display payment history
-window.onload = async () => {
-    await loadPaymentHistory();
-};
-
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.11/dist/web3.min.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

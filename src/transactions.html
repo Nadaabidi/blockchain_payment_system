@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Transaction History</h1>
+    <nav>
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="transactions.html">Transactions</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+    </nav>
+    <div>
+        <h3>Payment History</h3>
+        <table id="paymentHistoryTable">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Amount (ETH)</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="paymentHistory"></tbody>
+        </table>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

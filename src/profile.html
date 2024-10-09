@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>User Profile</h1>
+    <nav>
+        <ul>
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="transactions.html">Transactions</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+    </nav>
+    <h3>Your Preferences</h3>
+    <form id="preferencesForm">
+        <input type="number" id="paymentLimit" placeholder="Enter payment limit in ETH">
+        <button id="setPaymentLimit">Set Payment Limit</button>
+
+        <label for="notifications">Email Notifications:</label>
+        <select id="notifications">
+            <option value="enabled">Enabled</option>
+            <option value="disabled">Disabled</option>
+        </select>
+
+        <label for="currency">Preferred Currency:</label>
+        <select id="currency">
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="USD">US Dollar (USD)</option>
+        </select>
+
+        <button type="button" id="savePreferences">Save Preferences</button>
+    </form>
+
+    <p id="preferenceStatus"></p>
+    <script src="app.js"></script>
+</body>
+</html>
