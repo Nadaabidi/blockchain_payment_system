@@ -1,55 +1,415 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Transaction Tracker</title>
+    <title>Crypto Transaction Tracker | Blockchain Payment System</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="assets/bitcoin.png" type="image/x-icon">
 </head>
 <body>
-    <header class="header-section">
+    <header class="header">
         <div class="header-content">
             <h1>Crypto Transaction Tracker</h1>
-            <p>A blockchain-based payment system that ensures secure and efficient cryptocurrency transactions. Easily manage payments, check balances, and track transaction history with our seamless interface.</p>
-            <nav>
-                <ul class="nav-list">
-                    <li class="btn-98"><a href="index.html">Dashboard</a></li>
-                    <li class="btn-98"><a href="transactions.html">Transactions</a></li>
-                    <li class="btn-98"><a href="profile.html">Profile</a></li>
-                </ul>
-            </nav>
-        </div>
-        <div class="header-image">
-            <img src="./assets/bitcoin.png" alt="" />
+            <p>Your secure gateway to blockchain payments</p>
         </div>
     </header>
 
-    <div id="dashboardContent">
-        <button id="sendPayment" class="btn-50" onclick="openModal('Send Payment')"><span>Send Payment</span></button>
-        <button id="withdrawFunds" class="btn-50" onclick="openModal('Withdraw Funds')"><span>Withdraw Funds</span></button>
-        <button id="requestRefund" class="btn-50" onclick="openModal('Request Refund')"><span>Request Refund</span></button>
-        <button id="getBalance" class="btn-50" onclick="openModal('Get Contract Balance')"><span>Get Contract Balance</span></button>
+    <div class="container">
+        <div class="arrow-container">
+            <button id="prevButton" class="arrow">&#9664;</button>
+
+            <div class="button-container">
+                <div class="feature">
+                    <div class="button-description" id="buttonDescription">Send payments with ease!</div>
+                    <button class="btn-50" id="sendPayment">Send Payment</button>
+                </div>
+                <div class="feature" style="display:none;">
+                    <div class="button-description">Withdraw your funds securely.</div>
+                    <button class="btn-50" id="withdrawFunds" onclick="withdrawFunds()">Withdraw Funds</button>
+                </div>
+                <div class="feature" style="display:none;">
+                    <div class="button-description">Check the balance of your contract.</div>
+                    <button class="btn-50" id="getBalance">Get Contract Balance</button>
+                </div>
+            </div>
+
+            <button id="nextButton" class="arrow">&#9654;</button>
+        </div>
+            <!-- Modal for displaying results -->
+<div id="actionModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3 id="modalTitle"></h3>
+        <p id="modalMessage"></p>
+    </div>
+</div>
+
+
+<h3>Wallet Addresses</h3>
+<div class="container">
+    <select id="walletAddress" onchange="updateSelectedAddress()">
+        <option value="">Select a wallet address</option>
+    </select>
+</div>
+
+
+        <h3>Payment History</h3>
+        <table id="paymentHistoryTable">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Amount (ETH)</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="paymentHistory"></tbody>
+        </table>
+        <button class="btn-50" id="resetPayments" onclick="resetPaymentHistory()">Clear Payment History</button>
 
     </div>
-    <!-- Modal Popup Structure -->
-    <div id="outputModal" class="modal">
-        <h2 id="modalTitle"></h2>
-        <div class="modal-content" id="modalContent"></div>
-        <button class="close-modal" onclick="closeModal()">Close</button>
-    </div>
-
-    <script>
-        function openModal(action) {
-            document.getElementById('modalTitle').innerText = action;
-            document.getElementById('modalContent').innerText = `Performing action: ${action}`;
-            document.getElementById('outputModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('outputModal').style.display = 'none';
-        }
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.2.11/dist/web3.min.js"></script>
-    <script src="app.js"></script>
+    <script>
+
+  // Initialize feature navigation logic
+  let currentFeatureIndex = 0;
+        const featureElements = document.querySelectorAll('.feature');
+        const totalFeatures = featureElements.length;
+
+        function updateFeatureDisplay() {
+            featureElements.forEach((feature, index) => {
+                feature.style.display = (index === currentFeatureIndex) ? 'block' : 'none';
+            });
+        }
+
+        document.getElementById('prevButton').addEventListener('click', () => {
+            currentFeatureIndex = (currentFeatureIndex - 1 + totalFeatures) % totalFeatures;
+            updateFeatureDisplay();
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            currentFeatureIndex = (currentFeatureIndex + 1) % totalFeatures;
+            updateFeatureDisplay();
+        });
+
+        // Initialize the display for the first feature
+        updateFeatureDisplay();
+
+        const contractAddress = "0xFD80727e57620C3Db599d0D31fC8bdf4a69BDd72";
+        const abi = [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "PaymentReceived",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "payments",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive",
+      "payable": true
+    },
+    {
+      "inputs": [],
+      "name": "resetPayments",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "getPaymentCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPayment",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    }
+  ];
+        let web3;  
+        let contract;  
+
+    window.addEventListener('load', async () => {
+        if (window.ethereum) {
+            try {
+                await window.ethereum.enable(); 
+                web3 = new Web3(window.ethereum);  
+                console.log("Web3 has been enabled");               
+                contract = new web3.eth.Contract(abi, contractAddress);
+
+                await loadPaymentHistory();  
+                await loadWalletAddresses();
+            } catch (error) {
+                console.error("User denied account access", error);
+            }
+        } else {
+            console.error("Please install MetaMask or any Web3 provider");
+        }
+    });
+
+// Send Payment
+document.getElementById('sendPayment').addEventListener('click', async () => {
+    const accounts = await web3.eth.requestAccounts();
+    web3.eth.sendTransaction({
+        from: accounts[0],
+        to: contract.options.address,
+        value: web3.utils.toWei('0.01', 'ether')
+    }).then(async () => {
+        showModal("Send Payment", "Payment sent successfully!");
+        await loadPaymentHistory(); 
+    }).catch(err => {
+        console.error(err);
+        showModal("Send Payment", "Error sending payment.");
+    });
+});
+
+// Load Wallet Addresses
+async function loadWalletAddresses() {
+    const accounts = await web3.eth.getAccounts(); 
+    const walletAddressElement = document.getElementById('walletAddress');
+    
+    walletAddressElement.innerHTML = '<option value="">Select a wallet address</option>'; 
+    accounts.forEach(account => {
+        const accountElement = document.createElement('option'); 
+        accountElement.value = account;
+        accountElement.innerText = account;
+        walletAddressElement.appendChild(accountElement);
+    });
+}
+
+// Function to handle the change event of the dropdown
+function updateSelectedAddress() {
+    const selectedAddress = document.getElementById('walletAddress').value;
+    console.log("Selected wallet address:", selectedAddress);
+}
+
+
+// Load Payment History
+async function loadPaymentHistory() {
+    if (!web3) {
+        console.error("Web3 is not initialized");
+        return;
+    }
+    try {
+        const paymentCount = await contract.methods.getPaymentCount().call();
+        const paymentTableBody = document.getElementById('paymentHistory');
+
+        paymentTableBody.innerHTML = '';
+
+        for (let i = 0; i < paymentCount; i++) {
+            const payment = await contract.methods.getPayment(i).call();
+            const sender = payment[0];
+            const amountInWei = payment[1];
+            const timestamp = payment[2];
+            const amountInEth = web3.utils.fromWei(amountInWei, 'ether');
+            const date = new Date(timestamp * 1000).toLocaleString();
+
+            const row = `
+                <tr>
+                    <td>${sender}</td>
+                    <td>${amountInEth}</td>
+                    <td>${date}</td>
+                </tr>
+            `;
+            paymentTableBody.innerHTML += row;
+        }
+    } catch (error) {
+        console.error("Error loading payment history:", error);
+    }
+}
+// Clear Payment History
+async function resetPaymentHistory() {
+    const accounts = await web3.eth.requestAccounts();
+    contract.methods.resetPayments().send({
+        from: accounts[0]
+    }).then(() => {
+        showModal("Clear Payment History", "Payment history cleared successfully!");
+        loadPaymentHistory(); 
+    }).catch(err => {
+        console.error(err);
+        showModal("Clear Payment History", "Error clearing payment history.");
+    });
+}
+
+// Get Contract Balance
+document.getElementById('getBalance').addEventListener('click', async () => {
+    try {
+        const balance = await contract.methods.getBalance().call();
+        const balanceInEth = web3.utils.fromWei(balance, 'ether');
+        showModal("Contract Balance", "The contract balance is: " + balanceInEth + " ETH");
+    } catch (err) {
+        console.error("Error fetching contract balance:", err);
+        showModal("Contract Balance", "Error getting contract balance.");
+    }
+});
+
+
+// Withdraw Funds
+async function withdrawFunds() {
+    const accounts = await web3.eth.requestAccounts();
+    contract.methods.withdraw().send({
+        from: accounts[0]
+    }).then(() => {
+        showModal("Withdraw Funds", "Funds withdrawn successfully!");
+    }).catch(err => {
+        console.error(err);
+        showModal("Withdraw Funds", "Error withdrawing funds.");
+    });
+}
+
+// Function to display modal with dynamic content
+function showModal(title, message) {
+    document.getElementById('modalTitle').innerText = title;
+    document.getElementById('modalMessage').innerText = message;
+    document.getElementById('actionModal').style.display = "block";
+}
+
+// Function to close the modal
+function closeModal() {
+    document.getElementById('actionModal').style.display = "none";
+}
+ 
+    // Carousel logic
+    let currentButtonIndex = 0;
+        const buttons = document.querySelectorAll('.button-container button');
+        const totalButtons = buttons.length;
+
+        function updateButtonDisplay() {
+            buttons.forEach((button, index) => {
+                button.style.display = (index === currentButtonIndex) ? 'block' : 'none';
+            });
+        }
+
+        document.getElementById('prevButton').addEventListener('click', () => {
+            currentButtonIndex = (currentButtonIndex - 1 + totalButtons) % totalButtons;
+            updateButtonDisplay();
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            currentButtonIndex = (currentButtonIndex + 1) % totalButtons;
+            updateButtonDisplay();
+        });
+
+        // Initialize the display
+        updateButtonDisplay();
+    </script>
 </body>
 </html>

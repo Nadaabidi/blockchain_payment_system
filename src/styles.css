@@ -1,243 +1,245 @@
-/* Remove default margin and padding for the body */
-body, html {
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #f4f4f4;
 }
 
-/* Header Section Styling */
-.header-section {
+.header {
+    background-image: url('assets/header-bg.jpg'); 
+    height: 300px; 
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center; 
+    position: relative;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 30px;
-    background: linear-gradient(90deg, #007BFF 0%, #00C6FF 100%);
-    color: #fff;
-    width: 100%; /* Make the header full-width */
-    animation: backgroundAnimation 5s linear infinite;
+    text-align: center;
+}
+
+.header:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); 
 }
 
 .header-content {
-    flex: 1;
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: relative;
+    color: white; 
 }
 
-.header-content h1 {
-    font-size: 2.5rem;
-    margin: 0 0 10px;
+.container {
     text-align: center;
-}
-
-.header-content p {
-    font-size: 1.2rem;
-    margin: 0 0 15px;
-    line-height: 1.6;
-    text-align: center;
-}
-
-/* Navigation Bar Styling */
-.nav-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  font-size: 1.2rem; /* Increase the size of the navigation items */
-}
-
-.nav-list li {
-  margin: 0 10px; /* Space between each list item */
-}
-
-.nav-list button {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-
-.btn-98 {
-  --thickness: 4px;
-  background: none;
-  color: #fff;
-  font-weight: 900;
-  font-size: 1rem;
-  position: relative;
-  padding: 10px 20px;
-  text-transform: uppercase;
-  transition: color 0.3s ease;
-}
-
-.btn-98 a {
-  color: inherit; /* Inherit color from the button */
-  text-decoration: none; /* Remove underline from links */
-}
-
-.btn-98:hover a {
-  color: #00C6FF; /* Change color on hover for a visual effect */
-}
-
-.btn-98:before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: var(--thickness);
-  background: #fff;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 0.3s ease;
-}
-
-.btn-98:hover:before {
-  transform: scaleX(1);
-  transform-origin: left;
-}
-
-
-.header-image {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.header-image img {
-    max-width: 100%;
-    height: auto;
-}
-
-/* Center the buttons vertically */
-#dashboardContent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10px;
-    width: 100%;
-}
-
-button {
-    padding: 15px 30px;
-    font-size: 1.1rem;
-    margin: 10px 0; /* Add margin between buttons */
-    cursor: pointer;
-    min-width: 300px; /* Set a minimum width to ensure text fits in one line */
-    max-width: 80%; }/* Optional: limit the width for larger*/
-
-    .btn-50,
-    .btn-50 *,
-    .btn-50 :after,
-    .btn-50 :before,
-    .btn-50:after,
-    .btn-50:before {
-      border: 0 solid;
-      box-sizing: border-box;
-    }
-    .btn-50 {
-      -webkit-tap-highlight-color: transparent;
-      -webkit-appearance: button;
-      background-color: #000;
-      background-image: none;
-      color: #fff;
-      cursor: pointer;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-        Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
-        Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-      font-size: 100%;
-      line-height: 1.5;
-      margin: 0;
-      -webkit-mask-image: -webkit-radial-gradient(#000, #fff);
-      padding: 0;
-    }
-    .btn-50:disabled {
-      cursor: default;
-    }
-    .btn-50:-moz-focusring {
-      outline: auto;
-    }
-    .btn-50 svg {
-      display: block;
-      vertical-align: middle;
-    }
-    .btn-50 [hidden] {
-      display: none;
-    }
-    .btn-50 {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 1px 2px 2px #eee;
-      box-sizing: border-box;
-      color: #000;
-      display: block;
-      font-weight: 900;
-      -webkit-mask-image: none;
-      padding: 20px 60px;
-      perspective: 800px;
-      position: relative;
-      text-transform: uppercase;
-      transform: rotateX(32deg);
-      transform-style: preserve-3d;
-      transition: transform 0.2s;
-    }
-    .btn-50:hover {
-      transform: rotateX(38deg) translateY(7px);
-    }
-    .btn-50:before {
-      background: hsla(0, 0%, 100%, 0.3);
-      content: "";
-      filter: blur(80px);
-      height: 400%;
-      left: -50%;
-      pointer-events: none;
-      position: absolute;
-      top: 0;
-      transform: translateY(50px);
-      width: 200%;
-    }
-
-
-
-
-/* Modal Box Styling */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1000;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
     padding: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
+    color:#605C3C;
 }
 
-.modal h2 {
-    margin: 0 0 10px;
+.arrow-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.button-container {
+    margin: 0 20px;
+}
+
+.arrow {
+    font-size: 24px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: #6D6027; 
+    padding: 10px; 
+}
+
+.arrow:hover {
+    color: #D3CBB8; 
+}
+
+#paymentHistoryTable {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+#paymentHistoryTable th, #paymentHistoryTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#paymentHistoryTable th {
+    background-color: #D3CBB8; 
+    color: #6D6027; 
+}
+
+#paymentHistoryTable tr:hover {
+    background-color: #f1f1f1; 
+}
+.feature-text {
+    text-align: center; 
+    margin-bottom: 10px; 
+    font-weight: bold; 
+}
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.button-description {
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.btn-50,
+.btn-50 *,
+.btn-50 :after,
+.btn-50 :before,
+.btn-50:after,
+.btn-50:before {
+  border: 0 solid;
+  box-sizing: border-box;
+}
+.btn-50 {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: button;
+  background-color: #000;
+  background-image: none;
+  color: #D3CBB8;
+  cursor: pointer;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-size: 100%;
+  line-height: 1.5;
+  margin: 0;
+  -webkit-mask-image: -webkit-radial-gradient(#000, #fff);
+  padding: 0;
+}
+.btn-50:disabled {
+  cursor: default;
+}
+.btn-50:-moz-focusring {
+  outline: auto;
+}
+.btn-50 svg {
+  display: block;
+  vertical-align: middle;
+}
+.btn-50 [hidden] {
+  display: none;
+}
+.btn-50 {
+  background: #D3CBB8;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px 2px #eee;
+  box-sizing: border-box;
+  color: #6D6027;
+  display: block;
+  font-weight: 900;
+  -webkit-mask-image: none;
+  padding: 20px 60px;
+  perspective: 800px;
+  position: relative;
+  text-transform: uppercase;
+  transform: rotateX(32deg);
+  transform-style: preserve-3d;
+  transition: transform 0.2s;
+}
+.btn-50:hover {
+  transform: rotateX(38deg) translateY(7px);
+}
+.btn-50:before {
+  background: hsla(0, 0%, 100%, 0.3);
+  content: "";
+  filter: blur(80px);
+  height: 400%;
+  left: -50%;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform: translateY(50px);
+  width: 200%;
+}
+
+/* Modal styles */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0, 0, 0); 
+    background-color: rgba(0, 0, 0, 0.4); 
 }
 
 .modal-content {
-    margin: 15px 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin: 15% auto; 
+    padding: 20px;
+    border: none;
+    width: 80%; 
+    max-width: 400px; 
+    color: #D3CBB8;
 }
 
-.close-modal {
-    background: #007BFF;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
+.close {
+    color: #D3CBB8;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
     cursor: pointer;
-    margin-top: 10px;
+}
+
+/* Styles for the dropdown */
+#walletAddress {
+    padding: 10px; 
+    border: 2px solid #6D6027; 
+    border-radius: 5px; 
+    background-color: #D3CBB8; 
+    font-size: 16px; 
+    color: #333; 
+    transition: border-color 0.3s; 
+    width: 100%; 
+    max-width: 400px; 
+}
+
+
+#walletAddress:focus {
+    border-color: #6D6027; 
+    outline: none; 
+}
+
+
+#walletAddress option {
+    padding: 10px; 
+}
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    margin-bottom: 20px; 
+}
+
+
+h3 {
+    margin-bottom: 10px; 
+    color: #333; 
 }
